@@ -4,55 +4,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>OXYFANN API Tester</title>
+  <title>OXYFANN API Dashboard</title>
   <style>
     body {
       background: #080d18;
       color: #00ff99;
       font-family: monospace;
-      padding: 25px;
+      padding: 20px;
     }
     .card {
-      max-width: 450px;
-      margin: 40px auto;
-      padding: 24px;
+      max-width: 500px;
+      margin: 25px auto;
+      padding: 20px;
       border: 1px solid #00ff99;
       border-radius: 14px;
-      box-shadow: 0 0 18px #00ff9940;
+      box-shadow: 0 0 18px #00ff9930;
     }
-    h1 { color: #00ff99; }
+    button {
+      background: #00ff99;
+      color: #08120e;
+      border: 0;
+      padding: 12px;
+      margin: 4px 0;
+      border-radius: 7px;
+      font-weight: bold;
+    }
     pre {
       color: #d7ffe9;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
     }
-    button {
-      background: #00ff99;
-      border: 0;
-      padding: 12px 18px;
-      border-radius: 8px;
-      font-weight: bold;
-    }
+    .online { color: #00ff99; }
+    .error { color: #ff6969; }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>OXYFANN API</h1>
-    <p>Status: <span id="status">Menghubungkan...</span></p>
-    <pre id="data">Memuat data...</pre>
-    <button onclick="loadAPI()">Muat Ulang API</button>
+    <h2>OXYFANN API</h2>
+    <p>Status: <span id="status">Siap</span></p>
+
+    <button onclick="loadAPI('data.json')">
+      Tes Profil API
+    </button>
+
+    <button onclick="loadAPI('status.json')">
+      Tes Status API
+    </button>
+
+    <pre id="result">Pilih endpoint untuk mulai.</pre>
   </div>
 
   <script>
-    async function loadAPI() {
+    async function loadAPI(endpoint) {
       const status = document.getElementById("status");
-      const output = document.getElementById("data");
+      const result = document.getElementById("result");
 
-      status.textContent = "Menghubungkan...";
-      output.textContent = "";
+      status.textContent = "Memuat...";
+      status.className = "";
+      result.textContent = "";
 
       try {
-        const response = await fetch("./data.json");
+        const response = await fetch("./" + endpoint);
 
         if (!response.ok) {
           throw new Error("HTTP " + response.status);
@@ -61,14 +73,15 @@
         const data = await response.json();
 
         status.textContent = "ONLINE";
-        output.textContent = JSON.stringify(data, null, 2);
+        status.className = "online";
+        result.textContent =
+          JSON.stringify(data, null, 2);
       } catch (error) {
         status.textContent = "ERROR";
-        output.textContent = error.message;
+        status.className = "error";
+        result.textContent = error.message;
       }
     }
-
-    loadAPI();
   </script>
 </body>
 </html>
