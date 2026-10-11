@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OXYFANN API Tester</title>
+  <style>
+    body {
+      background: #080d18;
+      color: #00ff99;
+      font-family: monospace;
+      padding: 25px;
+    }
+    .card {
+      max-width: 450px;
+      margin: 40px auto;
+      padding: 24px;
+      border: 1px solid #00ff99;
+      border-radius: 14px;
+      box-shadow: 0 0 18px #00ff9940;
+    }
+    h1 { color: #00ff99; }
+    pre {
+      color: #d7ffe9;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    button {
+      background: #00ff99;
+      border: 0;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>OXYFANN API</h1>
+    <p>Status: <span id="status">Menghubungkan...</span></p>
+    <pre id="data">Memuat data...</pre>
+    <button onclick="loadAPI()">Muat Ulang API</button>
+  </div>
+
+  <script>
+    async function loadAPI() {
+      const status = document.getElementById("status");
+      const output = document.getElementById("data");
+
+      status.textContent = "Menghubungkan...";
+      output.textContent = "";
+
+      try {
+        const response = await fetch("./data.json");
+
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        status.textContent = "ONLINE";
+        output.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        status.textContent = "ERROR";
+        output.textContent = error.message;
+      }
+    }
+
+    loadAPI();
+  </script>
+</body>
+</html>
